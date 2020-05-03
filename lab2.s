@@ -214,6 +214,41 @@ change_case:
 ############################## Part 3: your code begins here ###
 
 
+la $t0, ($a0) # The pointer for original
+la $t1, ($a1) # The pointer for modified
+lb $t2, 65 
+
+while_!null:
+	lb $t2, 0($t0)
+	beq $t2, 0, null_terminate
+	blt $t2, 65, next_word	
+	bgt $t2, 122, next_word
+	beq $t2, 91, next_word
+	beq $t2, 92, next_word
+	beq $t2, 93, next_word
+	beq $t2, 94, next_word
+	beq $t2, 95, next_word
+	beq $t2, 96, next_word
+	bgt $t2, 96, lower_to_upper
+	# if here it means the upper_to_lower
+	# store into a1, $t2 + 32
+	addi $t2, $t2, 32
+	sb $t2, 0($t1)
+	addi $t1, $t1, 1 # go to next ouput array mem
+	addi $t0, $t0, 1 # go to next input array mem
+	j while_!null
+	lower_to_upper: # achieved by subtracting 32
+		addi $t2, $t2, -32
+		sb $t2, 0($t1)
+		addi $t1, $t1, 1
+		addi $t0, $t0, 1
+		j while_!null
+next_word:
+	addi $t0, $t0, 1
+	j while_!null
+
+null_terminate:
+
 
 ############################## Part 3: your code ends here ###
 jr $ra
