@@ -70,11 +70,53 @@ move $t0, $a0
 
 # 1 * 4least sig bt + 10* 4 next least sig bit
 
+li $t6, 0 # the multiply
 li $t1, 1 # the 1, 10, 100, 1000 ....
 li $t2, 0 # result of 4 bit masking
-li $t3, 0xF
-sll $t3, $t3, 4
-sll $t3, $t3, 4
+li $t3, 0xF # the mask that must be shifted
+li $t4, 0 # the counter
+li $t5, 0 # the sum of mult
+while_bcd:
+	beq $t4, 8, end_bcd
+	and $t2, $t3, $t0 # get least sig bit
+	mul $t6, $t1, $t2 # mult 1,10,100 by least sig bit
+	add $t5, $t5, $t6
+	addi $t4,$t4,1
+	mul $t1, $t1, 10
+	sll $t3, $t3, 4
+	j while_bcd
+ 
+
+
+
+#li $t6, 10
+#li $t1, 1 # the 1, 10, 100, 1000 ....
+#li $t2, 0 # result of 4 bit masking
+#li $t3, 0xF # the mask that must be shifted
+#li $t4, 0 # the counter
+#li $t5, 0 # the sum of mult
+#while_bcd:
+#	beq $t4, 8, end_bcd
+#	and $t2, $t0, $t3 # the 4 digit binary 
+#	mul $t2, $t2, $t1 # storing result of 1,10,100... and the 4bit into same register
+#	add $t5, $t2, $t5
+#	sll $t3, $t3, 4
+#	mul $t1, $t1, $t6
+#	addi $t4,$t4, 1
+#	j while_bcd
+
+
+
+
+
+
+
+
+
+end_bcd:
+li $t0, 0
+add $t0, $zero, $t5
+
 
 ############################ Part 1: your code ends here ###
 move $v0, $t0
