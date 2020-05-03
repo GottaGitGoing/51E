@@ -73,7 +73,7 @@ move $t0, $a0
 li $t6, 0 # the multiply
 li $t1, 1 # the 1, 10, 100, 1000 ....
 li $t2, 0 # result of 4 bit masking
-li $t3, 0xF # the mask that must be shifted
+li $t3, 15 # the mask that must be shifted
 li $t4, 0 # the counter
 li $t5, 0 # the sum of mult
 while_bcd:
@@ -83,10 +83,10 @@ while_bcd:
 	add $t5, $t5, $t6
 	addi $t4,$t4,1
 	mul $t1, $t1, 10
-	sll $t3, $t3, 4
+	#sll $t3, $t3, 4
+	srl $t0, $t0, 4
 	j while_bcd
  
-
 
 
 #li $t6, 10
