@@ -216,9 +216,9 @@ change_case:
 
 la $t0, ($a0) # The pointer for original
 la $t1, ($a1) # The pointer for modified
-lb $t2, 65 
-
-while_!null:
+#sb $t2, 0($t0)
+ 
+while_null:
 	lb $t2, 0($t0)
 	beq $t2, 0, null_terminate
 	blt $t2, 65, next_word	
@@ -236,18 +236,19 @@ while_!null:
 	sb $t2, 0($t1)
 	addi $t1, $t1, 1 # go to next ouput array mem
 	addi $t0, $t0, 1 # go to next input array mem
-	j while_!null
+	j while_null
 	lower_to_upper: # achieved by subtracting 32
 		addi $t2, $t2, -32
 		sb $t2, 0($t1)
 		addi $t1, $t1, 1
 		addi $t0, $t0, 1
-		j while_!null
+		j while_null
 next_word:
 	addi $t0, $t0, 1
-	j while_!null
+	j while_null
 
 null_terminate:
+sb $t2, 0($t1)
 
 
 ############################## Part 3: your code ends here ###
