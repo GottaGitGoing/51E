@@ -151,14 +151,46 @@ li $a2, 0
 syscall
 move $t3, $v0
 
+# -------------------------------
+
 # ======== Now read from the file ======
+
+#li $v0, 14
+#move $a0, $t3
+#la $a1, read_buffer
+#la $a2, 300
+#syscall
+
+
 li $v0, 14
 move $a0, $t3
 la $a1, read_buffer
 la $a2, 300
+
+
+
+
+
+
 syscall
 
-# -----------------
+la $t0, ($a1)
+li $t7, 0 # new line counter
+while_true:
+	lb $t2, 0($t0)
+	beqz $t2, end_buff
+	bne $t2, 10, next_word
+	addi $t7, $t7, 1
+	addi $t0, $t0, 1
+	j while_true
+
+next_word:
+	  addi $t0, $t0, 1
+	  j while_true
+	
+
+end_buff:
+
 
 
 
@@ -171,6 +203,11 @@ syscall
 li $v0, 4
 la $a0, read_buffer
 syscall
+
+
+li $v0, 1
+move $a0, $t7
+syscall 
 
 
 ############################### Part 3: your code ends here   ##
