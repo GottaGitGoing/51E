@@ -117,7 +117,15 @@ gcd:
 	jr $ra
 
 else:
-	
+	div $a0,$a1
+	mfhi $t1
+	add $a1, $zero, $t1
+	jal gcd
+	lw $ra, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+	addi $sp, $sp, 12
+	jr $ra
 
 
 
@@ -136,8 +144,24 @@ jr $ra
 #
 dump_file:
 ############################### Part 3: your code begins here ##
+li $v0, 13
+la $a0, file_name
+li $a1, 0
+li $a2, 0
+syscall
+move $t3, $v0
 
+# ======== Now read from the file ======
+li $v0, 14
+move $a0, $t3
+la $a1, read_buffer
+la $a2, 300
+syscall
 
+# ====== Close File ========
+li $v0, 16
+move $a0, $t3
+syscall
 
 ############################### Part 3: your code ends here   ##
 jr $ra
