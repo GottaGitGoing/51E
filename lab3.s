@@ -158,10 +158,20 @@ la $a1, read_buffer
 la $a2, 300
 syscall
 
+# -----------------
+
+
+
+
 # ====== Close File ========
 li $v0, 16
 move $a0, $t3
 syscall
+
+li $v0, 4
+la $a0, read_buffer
+syscall
+
 
 ############################### Part 3: your code ends here   ##
 jr $ra
