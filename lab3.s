@@ -72,12 +72,25 @@ jr $ra
 ###############################################################
 fibonacci_recur:
 ############################### Part 1: your code begins here ##
-addi $sp, $sp, -8
-sw $a1, 4($sp) # store a0 on the first 4 memory addresses of size 8
+addi $sp, $sp, -12
+sw $a2, 8($sp) # n-2
+sw $a1, 4($sp) # n-1
 sw $ra, 0($sp) # return address to the top of the stack
 addi $t0, $zero, $a0
 seq  $t0, $a0, $t0 # if a < the_reuding_n --> 
 
+
+# else Part
+else:
+	addi $a2, $a2, -2
+	jal fibonacci_recur # make a2 reach base case first
+	addi $a1, $a1, -1
+	jal fibonacci_recur # then make a1 reach base cae
+	lw $ra, 0($sp)
+	lw $a1, 4($sp)
+	lw $a2, 8($sp)
+	addi $sp, $sp, 12
+	add $v0,   
 
 ############################### Part 1: your code ends here  ##
 jr $ra
