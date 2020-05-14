@@ -72,17 +72,52 @@ jr $ra
 ###############################################################
 fibonacci_recur:
 ############################### Part 1: your code begins here ##
+
+	addi, $sp, $sp, -12
+	sw $a0, 8($sp)
+	sw $a1, 4($sp)
+	sw $ra, 0($sp)
+	bne $a0, 0, check_1
+	addi $v0, $zero, 0
+	addi $sp, $sp, 12
+	jr $ra
+	
+	check_1:
+	bne $a0, 1, else
+	addi $v0, $zero, 1
+	addi $sp, $sp, 12
+	jr $ra
+			
+	else:
+	addi $a0, $a0, -1
+	jal fibonacci_recur
+	add $a1, $v0, $zero # store the value returned from jal n-1
+	addi $v0, $a0, -2
+	jal fibonacci_recur
+	
+	
+	lw $ra, 0($sp)
+	lw $a1, 4($sp)
+	lw $a0, 8($sp)
+
+
+	#add, $v0, $v0, $a1
+	jr $ra	 
+
+
+
 #	addi $sp, $sp, -12
 #	sw $a2, 8($sp) # n-2
 #	sw $a1, 4($sp) # n-1
 #	sw $ra, 0($sp) # return address to the top of the stack
-#	addi $t2, $zero, $a2
+#	add $t2, $zero, $a2 # checking n-2
+#	
+#	
 #	beq $
 #	addi $t1, $zero, $a1
 #	seq  $t0, $a0, $t0 # if a < the_reuding_n --> 
-
-
-# else Part
+#
+#
 #else:
 #	addi $a2, $a2, -2
 #	jal fibonacci_recur # make a2 reach base case first
@@ -108,22 +143,23 @@ gcd:
 ############################### Part 2: your code begins here ##
 
 	addi $sp, $sp, -12
-	sw $a0, 8($sp)
-	sw $a1, 4($sp)
+	sw $a0, 4($sp)
+	sw $a1, 8($sp)
 	sw $ra, 0($sp)
-	bne $a1, $zero, else
+	bne $a1, $zero, else_gcd
 	add $v0, $zero, $a0 
 	addi $sp, $sp, 12
 	jr $ra
 
-else:
+else_gcd:
 	div $a0,$a1
-	mfhi $t1
-	add $a1, $zero, $t1
+	mfhi $t4
+	move $a0, $a1
+	move $a1, $t4
 	jal gcd
 	lw $ra, 0($sp)
-	lw $a1, 4($sp)
-	lw $a2, 8($sp)
+	lw $a1, 8($sp)
+	lw $a2, 4($sp)
 	addi $sp, $sp, 12
 	jr $ra
 
