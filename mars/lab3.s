@@ -72,10 +72,9 @@ jr $ra
 ###############################################################
 fibonacci_recur:
 ############################### Part 1: your code begins here ##
-
 	addi, $sp, $sp, -12
-	sw $a0, 8($sp)
-	sw $a1, 4($sp)
+	#sw $a1, 8($sp)
+	sw $a0, 4($sp)
 	sw $ra, 0($sp)
 	bne $a0, 0, check_1
 	addi $v0, $zero, 0
@@ -91,17 +90,19 @@ fibonacci_recur:
 	else:
 	addi $a0, $a0, -1
 	jal fibonacci_recur
+	lw $a0, 4($sp)
+	#lw $a1, 8($sp)
 	add $a1, $v0, $zero # store the value returned from jal n-1
-	addi $v0, $a0, -2
+	sw $a1, 8($sp)
+	addi $a0, $a0, -2
+	
 	jal fibonacci_recur
-	
-	
+	lw $a1, 8($sp)
+	add $v0, $a1, $v0
 	lw $ra, 0($sp)
-	lw $a1, 4($sp)
-	lw $a0, 8($sp)
-
-
-	#add, $v0, $v0, $a1
+	
+	
+	addi, $sp, $sp, 12
 	jr $ra	 
 
 
