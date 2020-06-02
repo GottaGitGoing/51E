@@ -235,8 +235,11 @@ transform:
 li $t0, 0 # x value
 li $t1, 0 # y value
 li $t2, 0 # offset
-
+# t3 and $t4 IN USE!!
 li $t5, 0 # stores the TranAr[INDEX]
+la $t6, ($a1) # Pointer to output
+#li $t7, 0 # index of input buffer
+#t8 USED FOR address of input !!!
 li $t9, 0 # some temp 
 
 while_transform:
@@ -250,10 +253,10 @@ while_transform:
 		lw $t5, 0($a2)
 		mul $t9, $t0, $t5 # x * tran[0]
 		add $t3, $t3, $t9 # x0 = x * tran[0]
-		lw $t5, 1($a2)
+		lw $t5, 4($a2)
 		mul $t9, $t1, $t5 
 		add $t3, $t3, $t9 # x0 += y * tran[1]
-		lw $t5, 2($a2)
+		lw $t5, 8($a2)
 		add $t3, $t3, $t5 # x0 += tran[2]
 		
 		# check x0 bounds 
@@ -262,16 +265,31 @@ while_transform:
 		continue_x0: # by this point x0 is in CORRECT RANGE
 		
 		# now calculate y0
-		lw $t5, 3($a2)
+		lw $t5, 12($a2)
 		mul $t9, $t0, $t5 # x * tran[3]
 		add $t4, $t4, $t9 # y0 += x * tran[3]
-		lw $t5, 4($a2)
+		lw $t5, 16($a2)
 		mul $t9, $t1, $t5 # y * tran[3]
 		add $t4, $t4, $t9 # y0 += y * tran[4]
-		lw $t5, 5($a2)
+		lw $t5, 20($a2)
 		add $t4, $t4, $t5
 		
-		# check
+		# check y0 bounds
+		sltu $t9, $t4, $a3
+		beq $t9, $zero, y0_out_bound
+		continue_y0: # by this point y0 is in correct range
+		
+		# find offset and save in $t2
+		mul $t9, $t4, $a3 # y0 * a3  --> row_ind * num_of_col
+		add $t2, $t3, $t9
+		
+		# access input buffer value
+		la $t8, 0($a0)
+		add $t8, $t8, $t2 
+		lbu $t9, 0($t8) # t9 contains value of input buffer
+		
+		sb $t9, 0($t6)
+		addi $t6, $t6, 1
 				
 								
 		addi $t0, $t0, 1
@@ -285,6 +303,10 @@ while_transform:
 x0_out_bound:
 	li $t3, 0
 	j continue_x0
+	
+y0_out_bound:
+	li $t4, 0
+	j continue_y0
 
 end_transform:
 
