@@ -231,19 +231,61 @@ transform:
 ############################### Part 2: your code begins here ##
 #input buffer can be accessed with lbu $t_, offset($a0)
 #transform can be accessed via 0,1,2,3,4,5  lw $t_, 0-5($a2)
+#take x0 and y0 to calculate offset: offset = y0 * number_of_cols (a3) + x0
 li $t0, 0 # x value
 li $t1, 0 # y value
+li $t2, 0 # offset
+
+li $t5, 0 # stores the TranAr[INDEX]
+li $t9, 0 # some temp 
 
 while_transform:
+	
 	beq $t1, $a3, end_transform
 	while_inc_x:
-		beq $t0, $a3, continue_loop
+		beq $t0, $a3, continue_outer_loop
+		li $t3, 0 # x0
+		li $t4, 0 # y0 
+		# now calculate x0
+		lw $t5, 0($a2)
+		mul $t9, $t0, $t5 # x * tran[0]
+		add $t3, $t3, $t9 # x0 = x * tran[0]
+		lw $t5, 1($a2)
+		mul $t9, $t1, $t5 
+		add $t3, $t3, $t9 # x0 += y * tran[1]
+		lw $t5, 2($a2)
+		add $t3, $t3, $t5 # x0 += tran[2]
+		
+		# check x0 bounds 
+		sltu $t9, $t3, $a3 # if x0 is greater equal to a3 Make ZERO / OUtofBounds
+		beq $t9, $zero, x0_out_bound
+		continue_x0: # by this point x0 is in CORRECT RANGE
+		
+		# now calculate y0
+		lw $t5, 3($a2)
+		mul $t9, $t0, $t5 # x * tran[3]
+		add $t4, $t4, $t9 # y0 += x * tran[3]
+		lw $t5, 4($a2)
+		mul $t9, $t1, $t5 # y * tran[3]
+		add $t4, $t4, $t9 # y0 += y * tran[4]
+		lw $t5, 5($a2)
+		add $t4, $t4, $t5
+		
+		# check
+				
+								
 		addi $t0, $t0, 1
 		j while_inc_x
-	continue_loop:
+	continue_outer_loop:
 	li $t0, 0
 	addi $t1, $t1, 1
 	j while_transform
+	
+
+x0_out_bound:
+	li $t3, 0
+	j continue_x0
+
 end_transform:
 
 
