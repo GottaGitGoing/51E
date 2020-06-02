@@ -229,6 +229,22 @@ jr $ra
 ###############################################################
 transform:
 ############################### Part 2: your code begins here ##
+#input buffer can be accessed with lbu $t_, offset($a0)
+#transform can be accessed via 0,1,2,3,4,5  lw $t_, 0-5($a2)
+li $t0, 0 # x value
+li $t1, 0 # y value
+
+while_transform:
+	beq $t1, $a3, end_transform
+	while_inc_x:
+		beq $t0, $a3, continue_loop
+		addi $t0, $t0, 1
+		j while_inc_x
+	continue_loop:
+	li $t0, 0
+	addi $t1, $t1, 1
+	j while_transform
+end_transform:
 
 
 
