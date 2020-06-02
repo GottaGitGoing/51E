@@ -301,12 +301,16 @@ while_transform:
 	
 
 x0_out_bound:
-	li $t3, 0
-	j continue_x0
+	sb $zero, 0($t6)
+	addi $t0, $t0, 1
+	addi $t6, $t6, 1
+	j while_inc_x
 	
 y0_out_bound:
-	li $t4, 0
-	j continue_y0
+	sb $zero, 0($t6)
+	addi $t0, $t0, 1
+	addi $t6, $t6, 1
+	j while_inc_x
 
 end_transform:
 
